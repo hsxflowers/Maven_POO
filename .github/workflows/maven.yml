@@ -24,4 +24,6 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Compilar no Java
       run: mvn compile
+    - name: Rodando programa
+      run: java -cp target/classes org.example.main
    
