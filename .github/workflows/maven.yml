@@ -35,6 +35,6 @@ jobs:
           registry: docker.io
           dockerfile: dockerfile
           username: hsxflowers
-          password: ${{ DOCKER_PASSWORD }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
 
