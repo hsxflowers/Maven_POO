@@ -33,19 +33,30 @@ jobs:
       - name: Configure Docker credentials
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u hsxflowers --password-stdin docker.io
       
-      - name: Get current version
-        id: get_version
-        run: echo "::set-output name=version::$(git tag -l --sort=v:refname | tail -1)"
+      - name: Read current version
+        id: read_version
+        run: echo "::set-output name=version::$(cat version.txt)"
+        if: steps.branch_name.outputs.name == 'main'
       
       - name: Increment version
         id: increment_version
-        run: echo "::set-output name=version::$(echo ${{ steps.get_version.outputs.version }} | semver -i minor)"
+        run: echo "::set-output name=version::$(echo ${{ steps.read_version.outputs.version }} + 0.1 | bc)"
+        if: steps.branch_name.outputs.name == 'main'
+      
+      - name: Write new version
+        id: write_version
+        run: echo "${{ steps.increment_version.outputs.version }}" > version.txt
+        if: steps.branch_name.outputs.name == 'main'
+      
+      - name: Get Docker image version
+        id: docker_version
+        run: echo "::set-output name=version::$(cat version.txt)"
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: ./
           push: true
-          tags: hsxflowers/maven_devops:${{ steps.increment_version.outputs.version }}
+          tags: hsxflowers/maven_devops:${{ steps.docker_version.outputs.version }}
 
         
