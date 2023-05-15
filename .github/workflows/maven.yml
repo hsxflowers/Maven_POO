@@ -26,6 +26,14 @@ jobs:
       run: mvn compile
     - name: Rodando programa
       run: java -cp target/classes org.example.Main
+    - name: Git Version
+      # You may pin to the exact commit or the version.
+      # uses: codacy/git-version@fa06788276d7492a2af01662649696d249ecf4cb
+      uses: codacy/git-version@2.4.0
+      with:
+        release-branch: main
+        dev-branch: main
+        log-paths: ./
       
     - uses: mr-smithers-excellent/docker-build-push@v6
       name: Deploy docker image
