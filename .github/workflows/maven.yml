@@ -57,6 +57,4 @@ jobs:
         with:
           context: ./
           push: true
-          tags: |
-            ${{ steps.docker_version.outputs.version }}
-            hsxflowers/maven_devops:latest
+          tags: ${{ steps.docker_version.outputs.version }}
