@@ -31,7 +31,6 @@ jobs:
       name: Deploy docker image
       with:
           image: hsxflowers/maven_devops
-          tags: 1.0, 1.1
           registry: docker.io
           dockerfile: dockerfile
           username: hsxflowers
