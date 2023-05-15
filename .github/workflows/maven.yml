@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -24,16 +25,23 @@ jobs:
       run: mvn compile
     - name: Rodando programa
       run: java -cp target/classes org.example.Main
-    - name: Get Git version
-      id: git_version
-      run: echo "::set-output name=version::$(git describe --tags --always)"
-      
+    - name: Get branch name
+      id: branch_name
+      run: echo "::set-output name=name::$(echo ${GITHUB_REF#refs/heads/})"
+
     - name: Configure Docker credentials
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u hsxflowers --password-stdin docker.io
+
+    - name: Get Docker image version
+      id: docker_version
+      uses: docker/metadata-action@v3
+      with:
+        images: hsxflowers/maven_devops
+        tags: '${{ steps.branch_name.outputs.name }}'
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
         context: ./
         push: true
-        tags: hsxflowers/maven_devops:${{ steps.git_version.outputs.version }}
+        tags: ${{ steps.docker_version.outputs.tags }}
